@@ -1,0 +1,112 @@
+% Ruled-paper template for typesetting a scanned maths workbook.
+% Copy this file for each section, fill in the title and the problems,
+% and compile twice with xelatex. See SKILL.md for the full workflow.
+%
+% Settled format (measure the user's actual paper first; these numbers
+% are for 204x291mm ruled paper with 8mm line spacing):
+%   PDF page = paper size, no bleed. Text width 115mm (left 35mm,
+%   right edge 150mm). Right 50mm is a correction zone, separated by a
+%   thin dashed line at x=154mm, drawn on every page. No page numbers.
+%   Baseline grid 8mm, first baseline 19mm from the top of the page.
+%   Inline fractions use \tfrac. Problem numbers use \textcircled.
+%   Answer space is always a whole multiple of 8mm.
+%
+% Compile: xelatex twice (the TikZ dashed line needs two passes).
+% Requires texlive-xetex + texlive-lang-chinese and Noto Serif CJK SC.
+\documentclass[11pt]{article}
+\usepackage[paperwidth=204mm,paperheight=291mm,left=35mm,right=54mm,top=11mm,bottom=12mm]{geometry}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK SC}
+\usepackage{amsmath,amssymb,graphicx,xcolor}
+\usepackage{tikz}
+% Correction zone: thin dashed line at x=154mm (50mm from the right
+% edge), running the full height of every page. Must compile twice;
+% a single pass draws the line off the page. When you move the line,
+% change BOTH endpoints or it draws slanted.
+\AddToHook{shipout/background}{%
+\begin{tikzpicture}[remember picture,overlay]
+\draw[black,thin,dashed] ([xshift=154mm]current page.north west) -- ([xshift=154mm]current page.south west);
+\end{tikzpicture}%
+}
+
+\newlength{\rulepitchlen}
+\setlength{\rulepitchlen}{8mm}
+
+% Round a block (knowledge box, figure, table) up to a whole number of
+% 8mm lines, so the next text baseline lands back on a ruled line.
+% Re-measure the offset for each new box height or figure size; do not
+% copy a calibration value from another block.
+\newsavebox{\gbbox}
+\newlength{\gbh}
+\newlength{\gbrem}
+\newlength{\gbgap}
+\newcount{\gbn}
+\newcommand{\gridblock}[1]{%
+\par\noindent
+\sbox{\gbbox}{\parbox[t]{\textwidth}{#1}}%
+\setlength{\gbh}{\dimexpr\ht\gbbox+\dp\gbbox\relax}%
+\gbn=\numexpr\gbh/\rulepitchlen\relax
+\setlength{\gbrem}{\dimexpr\gbh-\gbn\rulepitchlen\relax}%
+\ifdim\gbrem>0pt \advance\gbn by 1 \fi
+\usebox{\gbbox}\par\nointerlineskip
+\setlength{\gbgap}{\dimexpr\gbn\rulepitchlen-\dp\gbbox-\topskip\relax}%
+\vspace{\gbgap}%
+}
+
+\setlength{\parindent}{0pt}
+
+\pagestyle{empty}
+\begin{document}
+% One 8mm line, no extra space before or after paragraphs, first
+% baseline 8mm below the top of the text area (19mm from the page top).
+\fontsize{11pt}{8mm}\selectfont
+\setlength{\parskip}{0pt}
+\setlength{\topskip}{8mm}
+\setlength{\lineskip}{0pt}
+\setlength{\lineskiplimit}{0pt}
+
+% ================= 题目 =================
+\noindent{\fontsize{16pt}{8mm}\selectfont\bfseries 第1章\ 有理数\par}
+\noindent{\fontsize{14pt}{8mm}\selectfont\bfseries 第一周\ 正数和负数\ 数轴\ 相反数\par}
+\noindent{\fontsize{12pt}{8mm}\selectfont\bfseries 一、选择题\par}
+\noindent\textcircled{1} 在数轴上，原点及原点右边的点所表示的数是（\hspace{1.5em}）。
+
+\noindent （A）正数 \hfill （B）负数 \hfill （C）非正数 \hfill （D）非负数
+
+% Choice / fill-in problem: leave 1 line (8mm) after it.
+\vspace{8mm}
+
+\noindent\textcircled{2} 已知 $a$、$b$ 在数轴上的对应点的位置如图所示，那么下列各式中错误的是（\hspace{1.5em}）。
+
+% Figure in a \gridblock so the text after it stays on the grid.
+% Crop the figure from a 300 DPI render of the source page; enlarge
+% only, never redraw. Add a centred caption naming the figure.
+\gridblock{%
+{\centering\includegraphics[width=6.1cm]{figures/fig2.png}\par}
+{\centering\small 第 2 题图\par}%
+}
+
+\noindent （A）$a<0$ \hfill （B）$b>0$ \hfill （C）$-a>0$ \hfill （D）$-b>0$
+
+% Choice / fill-in problem: leave 1 line (8mm) after it.
+\vspace{8mm}
+
+\noindent{\fontsize{12pt}{8mm}\selectfont\bfseries 二、填空题\par}
+\noindent\textcircled{3} 如果 $a+3$ 的相反数是 $-3$，那么 $a=$\underline{\hspace{3em}}。
+
+% Choice / fill-in problem: leave 1 line (8mm) after it.
+\vspace{8mm}
+
+\noindent{\fontsize{12pt}{8mm}\selectfont\bfseries 三、解答题\par}
+\noindent\textcircled{4} 把 $-1$、$2.6$、$-\tfrac{22}{7}$、$0.35$、$0$、$25$、$0.\dot{4}\dot{4}$ 填在相应的横线上。
+
+\noindent 正有理数：\underline{\hspace{20em}}；
+
+\noindent 非负整数：\underline{\hspace{20em}}；
+
+\noindent 非正整数：\underline{\hspace{20em}}。
+
+% Worked problem: leave 2 lines (16mm) after it for working.
+\vspace{16mm}
+
+\end{document}

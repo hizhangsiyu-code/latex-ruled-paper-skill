@@ -1,0 +1,5 @@
+name: latex_ruled_paper_typesetting
+title: Typeset a Scanned Maths Workbook on Ruled Paper
+description: Turn a scanned maths workbook into clean, printable LaTeX PDFs on the user's own ruled paper, with a correction zone, answer space and figures taken from the original.
+category: productivity
+prompt_inclusion: on_request
