@@ -1,6 +1,6 @@
 # LaTeX Ruled-Paper Typesetting / 横线纸排版
 
-![Showcase](assets/showcase.png)
+![Showcase](showcase.png)
 
 [English](#english) | [中文](#中文)
 
